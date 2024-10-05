@@ -2,7 +2,7 @@ class Room {
   String roomId;
   String roomName;
   String createdBy;
-  int participants;
+  final Map<String, String> participants;
   DateTime? createdAt;
 
   Room({
@@ -19,7 +19,7 @@ class Room {
       roomId: map['roomId'],
       roomName: map['roomName'],
       createdBy: map['createdBy'],
-      participants: map['participants'],
+      participants: Map<String, String>.from(map['participants'] ?? {}),
       createdAt: map['createdAt'] != null
           ? DateTime.fromMillisecondsSinceEpoch(map['createdAt'])
           : null,

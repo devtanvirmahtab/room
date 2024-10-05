@@ -108,6 +108,11 @@ class HomeView extends GetView<HomeController> {
 
   Widget listItem({required Room room}){
     return InkWell(
+      onTap: (){
+        Get.toNamed(Routes.ROOM_SCREEN,arguments: {
+          'id': room.roomId,
+        });
+      },
       child: Ink(
         padding: mainPadding(20, 15),
         decoration: BoxDecoration(
@@ -122,7 +127,7 @@ class HomeView extends GetView<HomeController> {
               children: [
                 Text(room.roomName,style: text16Style(),),
                 gapW8,
-                Text('Participants: ${room.participants}',style: text14Style(),),
+                Text('Participants: ${room.participants.length}',style: text14Style(),),
               ],
             ),
             const Icon(Icons.arrow_forward_ios_rounded,),
