@@ -10,8 +10,8 @@ import '../../../network/web_rtc/signaling.dart';
 class RoomScreenController extends GetxController {
   final id = ''.obs;
   final signaling = Signaling();
-  RTCVideoRenderer localRenderer = RTCVideoRenderer();
-  RTCVideoRenderer remoteRenderer = RTCVideoRenderer();
+  final localRenderer = RTCVideoRenderer().obs;
+  final remoteRenderer = RTCVideoRenderer().obs;
   var participants = <String, String>{}.obs;
   final audioMuted = false.obs, videoMuted = false.obs;
   final isAudioMuted = false.obs;
@@ -24,7 +24,6 @@ class RoomScreenController extends GetxController {
       if (arguments['id'] != null) {
         id.value = arguments['id'];
         logger. d('arguments ${id.value}');
-        checkAndRequestPermissions();
         // joinRoom(id.value);
         initialize(id.value);
       }
@@ -33,32 +32,9 @@ class RoomScreenController extends GetxController {
     super.onInit();
   }
 
-  Future<void> checkAndRequestPermissions() async {
-    // Check camera permission
-    PermissionStatus cameraStatus = await Permission.camera.status;
-    if (!cameraStatus.isGranted) {
-      cameraStatus = await Permission.camera.request();
-    }
-
-    // Check microphone permission
-    PermissionStatus microphoneStatus = await Permission.microphone.status;
-    if (!microphoneStatus.isGranted) {
-      microphoneStatus = await Permission.microphone.request();
-    }
-
-    // Check if both permissions are granted
-    if (cameraStatus.isGranted && microphoneStatus.isGranted) {
-      print("Camera and Microphone permissions are granted.");
-      // Proceed with WebRTC initialization or any other logic
-    } else {
-      print("Permissions are not granted.");
-      // Handle the case when permissions are not granted (e.g., show a dialog)
-    }
-  }
-
   Future<void> joinRoom(String roomId) async {
-    await localRenderer.initialize();
-    await remoteRenderer.initialize();
+    await localRenderer.value.initialize();
+    await remoteRenderer.value.initialize();
 
     final roomDoc = firestore.collection('rooms').doc(roomId);
 
@@ -77,7 +53,7 @@ class RoomScreenController extends GetxController {
 
 
       // Get user media
-      await signaling.getUserMedia(localRenderer);
+      await signaling.getUserMedia(localRenderer.value);
 
       // Add the user to the participants map
       final user = FirebaseAuth.instance.currentUser;
@@ -111,9 +87,9 @@ class RoomScreenController extends GetxController {
   }
 
   Future<void> initialize(roomId) async {
-    await localRenderer.initialize();
-    await remoteRenderer.initialize();
-    await signaling.getUserMedia(localRenderer);
+    await localRenderer.value.initialize();
+    await remoteRenderer.value.initialize();
+    await signaling.getUserMedia(localRenderer.value);
 
     // Get user UID and display name
     final user = FirebaseAuth.instance.currentUser;
@@ -125,7 +101,7 @@ class RoomScreenController extends GetxController {
     }
 
     // Initialize PeerConnection and listeners
-    await signaling.initializePeerConnection(roomId, remoteRenderer);
+    await signaling.initializePeerConnection(roomId, remoteRenderer.value);
     signaling.listenForOffer(roomId);
     signaling.listenForAnswer(roomId);
     signaling.listenForIceCandidates(roomId);
@@ -163,7 +139,7 @@ class RoomScreenController extends GetxController {
 
   // Function to start a call
   Future<void> startCall() async {
-    await signaling.getUserMedia(localRenderer); // Get local audio/video stream
+    await signaling.getUserMedia(localRenderer.value); // Get local audio/video stream
     await signaling.createOffer(id.value); // Create WebRTC offer
   }
 
@@ -188,8 +164,8 @@ class RoomScreenController extends GetxController {
   }
 
   Future<void> close() async {
-    await localRenderer.dispose();
-    await remoteRenderer.dispose();
+    await localRenderer.value.dispose();
+    await remoteRenderer.value.dispose();
 
     // Remove user from participants list
     final user = FirebaseAuth.instance.currentUser;

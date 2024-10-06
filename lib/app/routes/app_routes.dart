@@ -10,6 +10,8 @@ abstract class Routes {
   static const CREATE_ROOM = _Paths.CREATE_ROOM;
   static const ROOM_SCREEN = _Paths.ROOM_SCREEN;
   static const SPLASH_SCREEN = _Paths.SPLASH_SCREEN;
+  static const CHAT = _Paths.CHAT;
+  static const CALL = _Paths.CALL;
 }
 
 abstract class _Paths {
@@ -21,4 +23,6 @@ abstract class _Paths {
   static const CREATE_ROOM = '/create-room';
   static const ROOM_SCREEN = '/room-screen';
   static const SPLASH_SCREEN = '/splash-screen';
+  static const CHAT = '/chat';
+  static const CALL = '/call';
 }

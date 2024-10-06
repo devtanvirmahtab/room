@@ -32,7 +32,9 @@ class RoomScreenView extends GetView<RoomScreenController> {
             child: Stack(
               children: [
                 Positioned.fill(
-                  child: RTCVideoView(controller.remoteRenderer),
+                  child: Obx(() {
+                    return RTCVideoView(controller.remoteRenderer.value);
+                  }),
                 ),
                 Align(
                   alignment: Alignment.topLeft,
@@ -42,27 +44,30 @@ class RoomScreenView extends GetView<RoomScreenController> {
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.blueAccent),
                     ),
-                    child: RTCVideoView(controller.localRenderer),
+                    child: Obx(() {
+                      return RTCVideoView(controller.localRenderer.value);
+                    }),
                   ),
                 ),
               ],
             ),
           ),
-          Obx(() => Container(
-            padding: EdgeInsets.all(10),
-            height: 100, // Fixed height for the participants list
-            child: ListView.builder(
-              itemCount: controller.participants.length,
-              itemBuilder: (context, index) {
-                String uid = controller.participants.keys.elementAt(index);
-                String name = controller.participants[uid] ?? 'Unknown';
-                return ListTile(
-                  title: Text(name), // Show participant name
-                  subtitle: Text(uid), // Show participant UID (optional)
-                );
-              },
-            ),
-          )),
+          Obx(() =>
+              Container(
+                padding: const EdgeInsets.all(10),
+                height: 100, // Fixed height for the participants list
+                child: ListView.builder(
+                  itemCount: controller.participants.length,
+                  itemBuilder: (context, index) {
+                    String uid = controller.participants.keys.elementAt(index);
+                    String name = controller.participants[uid] ?? 'Unknown';
+                    return ListTile(
+                      title: Text(name), // Show participant name
+                      subtitle: Text(uid), // Show participant UID (optional)
+                    );
+                  },
+                ),
+              )),
           ControlPanel(roomController: controller),
         ],
       ),
@@ -83,20 +88,25 @@ class ControlPanel extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Obx(() => IconButton(
-            icon: Icon(
-              roomController.audioMuted.value ? Icons.mic_off : Icons.mic,
-              color: roomController.audioMuted.value ? Colors.red : Colors.green,
-            ),
-            onPressed: roomController.toggleAudio,
-          )),
-          Obx(() => IconButton(
-            icon: Icon(
-              roomController.videoMuted.value ? Icons.videocam_off : Icons.videocam,
-              color: roomController.videoMuted.value ? Colors.red : Colors.green,
-            ),
-            onPressed: roomController.toggleVideo,
-          )),
+          Obx(() =>
+              IconButton(
+                icon: Icon(
+                  roomController.audioMuted.value ? Icons.mic_off : Icons.mic,
+                  color: roomController.audioMuted.value ? Colors.red : Colors
+                      .green,
+                ),
+                onPressed: roomController.toggleAudio,
+              )),
+          Obx(() =>
+              IconButton(
+                icon: Icon(
+                  roomController.videoMuted.value ? Icons.videocam_off : Icons
+                      .videocam,
+                  color: roomController.videoMuted.value ? Colors.red : Colors
+                      .green,
+                ),
+                onPressed: roomController.toggleVideo,
+              )),
         ],
       ),
     );

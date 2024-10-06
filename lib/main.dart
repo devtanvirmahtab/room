@@ -19,4 +19,5 @@ void main() async {
       getPages: AppPages.routes,
     ),
   );
+
 }

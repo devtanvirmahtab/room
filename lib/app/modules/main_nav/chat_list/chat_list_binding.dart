@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-
 import 'chat_list_controller.dart';
 
 
