@@ -25,11 +25,8 @@ class ChatView extends GetView<ChatController> {
         backgroundColor: AppColor.primaryColor,
         actions: [
           IconButton(onPressed: (){
-            Get.toNamed(Routes.CALL,arguments: {
-              'chatRoomId':controller.chatRoomId.value,
-              'senderId': controller.senderId,
-            });
-          }, icon: Icon(Icons.call),)
+            Get.toNamed(Routes.CALL,);
+          }, icon: const Icon(Icons.call),)
         ],
       ),
       body: Column(

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:room/app/core/constant/app_constants.dart';
-import 'package:room/app/data/room/room_model.dart';
 
 import '../../../core/constant/app_colors.dart';
 import '../../../core/constant/app_text_style.dart';
 import '../../../routes/app_pages.dart';
+import '../../call_check.dart';
+import '../../room/room_view.dart';
 import 'home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
@@ -28,7 +29,7 @@ class HomeView extends GetView<HomeController> {
                   child: boundButton(
                     title: 'Create Room',
                     onTap: () {
-                      Get.toNamed(Routes.CREATE_ROOM,);
+                      Get.to(const RoomView());
                     },
                   ),
                 ),
@@ -36,12 +37,26 @@ class HomeView extends GetView<HomeController> {
                 Expanded(
                   child: boundButton(
                     title: 'Join Room',
-                    onTap: () {},
+                    onTap: () {
+                      Get.to(MyHomePage());
+                    },
                   ),
                 ),
               ],
             ),
-            gapH12,
+            gapH16,
+            Obx(() {
+              return Visibility(
+                visible: controller.roomList.isNotEmpty,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Rooms List',
+                    style: text16Style(),
+                  ),
+                ),
+              );
+            }),
             Expanded(
               child: Obx(() {
                 if (controller.roomList.isEmpty) {
@@ -58,10 +73,10 @@ class HomeView extends GetView<HomeController> {
                   padding: mainPadding(0, 10),
                   itemCount: controller.roomList.length,
                   itemBuilder: (context, index) {
-                    final room = controller.roomList[index];
-                    return listItem(room: room);
+                    final roomId = controller.roomList[index];
+                    return listItem(roomId: roomId);
                   },
-                  separatorBuilder: (context,index){
+                  separatorBuilder: (context, index) {
                     return gapH12;
                   },
                 );
@@ -106,18 +121,16 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
-  Widget listItem({required Room room}){
+  Widget listItem({required String roomId}) {
     return InkWell(
-      onTap: (){
-        Get.toNamed(Routes.ROOM_SCREEN,arguments: {
-          'id': room.roomId,
-        });
+      onTap: () {
+        Get.to(RoomView(roomId: roomId,));
       },
       child: Ink(
         padding: mainPadding(20, 15),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
-          color: AppColor.liteGrey,
+          color: AppColor.infoColor.withOpacity(0.3),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -125,12 +138,15 @@ class HomeView extends GetView<HomeController> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(room.roomName,style: text16Style(),),
-                gapW8,
-                Text('Participants: ${room.participants.length}',style: text14Style(),),
+                Text(
+                  roomId,
+                  style: text16Style(),
+                ),
               ],
             ),
-            const Icon(Icons.arrow_forward_ios_rounded,),
+            const Icon(
+              Icons.arrow_forward_ios_rounded,
+            ),
           ],
         ),
       ),

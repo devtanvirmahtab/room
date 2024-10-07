@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:get/get.dart';
 import 'package:room/app/core/constant/app_constants.dart';
 import 'package:room/app/core/widgets/app_button.dart';
@@ -11,56 +12,95 @@ class CallView extends GetView<CallController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        leading: Container(),
-        title: const Text('Incoming Call'),
-        backgroundColor: Colors.redAccent,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Display caller's name or ID
-            Obx(() {
-              return Text(
-                controller.callState.value, // Display caller ID
-                style: const TextStyle(
-                  fontSize: 24,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+      body: Column(
+        children: [
+          SizedBox(
+            height: 200,
+            child: Column(
+              children: [
+                gapH30,
+                Wrap(
+                  children: [
+                    AppButton(
+                      onTap: () {
+                        controller.signaling.openUserMedia(
+                          controller.localRenderer.value,
+                          controller.remoteRenderer.value,
+                        );
+                        logger.d("Open camera");
+                      },
+                      text: "Open camera & microphone",
+                    ),
+                    gapW8,
+                    AppButton(
+                      onTap: () async {
+                        controller.roomId.value = await controller.signaling
+                            .createRoom(controller.remoteRenderer.value);
+                        controller.textEditingController.text =
+                            controller.roomId.value;
+                        logger.d('roomId ${controller.roomId.value}');
+                      },
+                      text: 'Call',
+                    ),
+                    gapW8,
+                    AppButton(
+                      onTap: () {
+                        // Add roomId
+                        controller.signaling.joinRoom(
+                          controller.textEditingController.text.trim(),
+                          controller.remoteRenderer.value,
+                        );
+                      },
+                      text: "Join room",
+                    ),
+                    gapW8,
+                    AppButton(
+                      onTap: () {
+                        controller.signaling
+                            .hangUp(controller.localRenderer.value);
+                      },
+                      text: "Hangup",
+                    ),
+                  ],
                 ),
-              );
-            }),
-            gapH12,
-            CircleAvatar(
-              radius: 60,
-              backgroundColor: Colors.grey[300],
-              child: const Icon(
-                Icons.person,
-                size: 50,
-                color: Colors.white,
-              ), // Placeholder for caller's image
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: TextFormField(
+                          controller: controller.roomController,
+                          decoration: const InputDecoration(
+                              enabledBorder: OutlineInputBorder(),
+                              focusedBorder: OutlineInputBorder()),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ],
             ),
-            gapH12,
-            AppButton(
-              onTap: () {
-                controller.receiveCall();
-                // Optionally navigate to the call screen if needed
-              },
-              text: 'Accept',
+          ),
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Obx(() {
+                    return RTCVideoView(controller.localRenderer.value,
+                        mirror: true);
+                  }),
+                ),
+                Expanded(
+                  child: Obx(() {
+                    return RTCVideoView(controller.remoteRenderer.value);
+                  }),
+                ),
+              ],
             ),
-            gapH12,
-            AppButton(
-              onTap: () {
-                controller.endCall();
-                Get.back(); // Navigate back to the previous screen
-              },
-              text: 'Decline',
-            ),
-            const SizedBox(height: 40),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
