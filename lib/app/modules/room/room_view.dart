@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
+import 'package:get/get.dart';
 import 'package:room/app/core/constant/app_constants.dart';
+import 'package:room/app/core/constant/app_text_style.dart';
+import 'package:room/app/core/widgets/app_button.dart';
 
 import '../../network/web_rtc/signaling.dart';
 
 class RoomView extends StatefulWidget {
-
   final String? roomId;
 
   const RoomView({
@@ -21,11 +23,11 @@ class MyHomePageState extends State<RoomView> {
   Signaling signaling = Signaling();
   RTCVideoRenderer _localRenderer = RTCVideoRenderer();
   RTCVideoRenderer _remoteRenderer = RTCVideoRenderer();
-  String? roomId;
+  String? createdRoomId;
   TextEditingController textEditingController = TextEditingController(text: '');
 
   @override
-  initState()  {
+  initState() {
     _localRenderer.initialize();
     _remoteRenderer.initialize();
 
@@ -40,19 +42,41 @@ class MyHomePageState extends State<RoomView> {
   init() async {
     await signaling.openUserMedia(_localRenderer, _remoteRenderer);
 
-    if (widget.roomId != null) {
-      await signaling.joinRoom(
-        widget.roomId!,
-        _remoteRenderer,
-      );
-    }else{
-      await signaling.createRoom(_remoteRenderer);
-      setState(() {});
+    Future.delayed(const Duration(seconds: 1), () async {
+      if (widget.roomId != null) {
+        await signaling.joinRoom(
+          widget.roomId!,
+          _remoteRenderer,
+        );
+      } else {
+        createdRoomId = await signaling.createRoom(_remoteRenderer);
+        setState(() {});
+      }
+    });
+  }
+
+  Future<void> deleteRoomIfExists(String roomId) async {
+    final docRef = firestore.collection('roomsDB').doc(roomId);
+    final docSnapshot = await docRef.get();
+
+    if (docSnapshot.exists) {
+      await docRef.delete();
+      logger.d('Room with ID $roomId deleted successfully.');
+    } else {
+      logger.d('Room with ID $roomId does not exist.');
     }
   }
 
   @override
   void dispose() {
+    if(widget.roomId != null){
+      deleteRoomIfExists(widget.roomId ?? '');
+    }
+    if(createdRoomId != null){
+      deleteRoomIfExists(createdRoomId ?? '');
+    }
+
+    logger.d("dispose dispose");
     signaling.hangUp(_localRenderer);
     _localRenderer.dispose();
     _remoteRenderer.dispose();
@@ -63,50 +87,50 @@ class MyHomePageState extends State<RoomView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Welcome to Flutter Explained - WebRTC"),
+        title: Text(
+          "WebRTC Video Call",
+          style: text16Style(),
+        ),
       ),
-      body: Column(
-        children: [
-          gapH12,
-          Wrap(
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  signaling.hangUp(_localRenderer);
-                },
-                child: Text("Hangup"),
-              )
-            ],
-          ),
-          gapH8,
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(child: RTCVideoView(_localRenderer, mirror: true)),
-                  Expanded(child: RTCVideoView(_remoteRenderer)),
-                ],
+      body: Expanded(
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            RTCVideoView(
+              _remoteRenderer,
+              objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+            ),
+            Positioned(
+              height: 200,
+              width: 120,
+              top: 20,
+              right: 20,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: Expanded(
+                  child: RTCVideoView(
+                    _localRenderer,
+                    mirror: true,
+                    objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+                  ),
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("Join Room: "),
-                Flexible(
-                  child: TextFormField(
-                    controller: textEditingController,
-                  ),
-                )
-              ],
+            Positioned(
+              height: 50,
+              bottom: 20,
+              right: 20,
+              left: 20,
+              child: AppButton(
+                onTap: () {
+                  signaling.hangUp(_localRenderer);
+                  Get.back();
+                },
+                text: "Call End",
+              ),
             ),
-          ),
-          SizedBox(height: 8)
-        ],
+          ],
+        ),
       ),
     );
   }

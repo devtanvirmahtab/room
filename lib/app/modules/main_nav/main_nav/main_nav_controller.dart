@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../setting/setting_view.dart';
 import '../chat_list/chat_list_view.dart';
 import '../home/home_view.dart';
 
@@ -9,7 +10,7 @@ class MainNavController extends GetxController {
   final pages = const [
     HomeView(),
     ChatListView(),
-    HomeView(),
+    SettingView(),
   ];
 
   @override

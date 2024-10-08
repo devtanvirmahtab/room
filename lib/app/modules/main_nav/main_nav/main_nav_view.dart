@@ -12,10 +12,7 @@ class MainNavView extends GetView<MainNavController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Obx(() {
-        return IndexedStack(
-          index: controller.selectedIndex.value,
-          children: controller.pages,
-        );
+        return controller.pages[controller.selectedIndex.value];
       }),
       bottomNavigationBar: Obx(() {
         return BottomNavigationBar(

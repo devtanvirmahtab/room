@@ -16,6 +16,8 @@ import '../modules/room/create_room/create_room_binding.dart';
 import '../modules/room/create_room/create_room_view.dart';
 import '../modules/room/room_screen/room_screen_binding.dart';
 import '../modules/room/room_screen/room_screen_view.dart';
+import '../modules/setting/setting_binding.dart';
+import '../modules/setting/setting_view.dart';
 import '../modules/splash_screen/splash_screen_binding.dart';
 import '../modules/splash_screen/splash_screen_view.dart';
 
@@ -71,6 +73,11 @@ class AppPages {
       name: _Paths.CALL,
       page: () => const CallView(),
       binding: CallBinding(),
+    ),
+    GetPage(
+      name: _Paths.SETTING,
+      page: () => const SettingView(),
+      binding: SettingBinding(),
     ),
   ];
 }

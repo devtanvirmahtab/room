@@ -18,9 +18,11 @@ class LoginView extends GetView<LoginController> {
       ),
       body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             AppButton(
-              text: 'Login',
+              text: 'Login with google',
               onTap: () async {
                 bool res = await controller.authMethod.signInWithGoogle(context);
                 if(res){

@@ -4,7 +4,6 @@ import 'package:room/app/core/constant/app_colors.dart';
 import 'package:room/app/core/constant/app_constants.dart';
 import 'package:room/app/core/constant/app_text_style.dart';
 
-import '../../routes/app_pages.dart';
 import 'chat_controller.dart';
 
 class ChatView extends GetView<ChatController> {
@@ -24,9 +23,15 @@ class ChatView extends GetView<ChatController> {
         }),
         backgroundColor: AppColor.primaryColor,
         actions: [
-          IconButton(onPressed: (){
-            Get.toNamed(Routes.CALL,);
-          }, icon: const Icon(Icons.call),)
+          // IconButton(
+          //   onPressed: () async {
+          //     // Get.toNamed(
+          //     //   Routes.CALL,
+          //     // );
+          //     // subscribe to a topic.
+          //   },
+          //   icon: const Icon(Icons.call),
+          // ),
         ],
       ),
       body: Column(
@@ -50,8 +55,23 @@ class ChatView extends GetView<ChatController> {
                         decoration: BoxDecoration(
                             color: AppColor.likeWhite,
                             borderRadius: BorderRadius.circular(20)),
-                        child: Text(
-                          message.content,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Obx(() {
+                              return Visibility(
+                                visible:
+                                    message.senderId != controller.senderId,
+                                child: Text(
+                                  controller.user.value.name ?? '',
+                                  style: text16Style(),
+                                ),
+                              );
+                            }),
+                            Text(
+                              message.content,
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -92,5 +112,4 @@ class ChatView extends GetView<ChatController> {
       ),
     );
   }
-
 }

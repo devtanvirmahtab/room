@@ -36,7 +36,7 @@ class HomeView extends GetView<HomeController> {
                 gapW12,
                 Expanded(
                   child: boundButton(
-                    title: 'Join Room',
+                    title: 'Test Room',
                     onTap: () {
                       Get.to(MyHomePage());
                     },
