@@ -13,7 +13,6 @@ class MainNavBinding extends Bindings {
       () => MainNavController(),
     );
 
-
     Get.lazyPut<HomeController>(
           () => HomeController(),
     );

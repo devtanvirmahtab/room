@@ -38,7 +38,7 @@ class HomeView extends GetView<HomeController> {
                   child: boundButton(
                     title: 'Test Room',
                     onTap: () {
-                      Get.to(MyHomePage());
+                      Get.to(const MyHomePage());
                     },
                   ),
                 ),

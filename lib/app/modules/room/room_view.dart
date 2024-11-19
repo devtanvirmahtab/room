@@ -92,45 +92,47 @@ class MyHomePageState extends State<RoomView> {
           style: text16Style(),
         ),
       ),
-      body: Expanded(
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            RTCVideoView(
-              _remoteRenderer,
-              objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
-            ),
-            Positioned(
-              height: 200,
-              width: 120,
-              top: 20,
-              right: 20,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(15),
-                child: Expanded(
-                  child: RTCVideoView(
-                    _localRenderer,
-                    mirror: true,
-                    objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+      body: Column(
+        children: [
+          Expanded(
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                RTCVideoView(
+                  _remoteRenderer,
+                  objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+                ),
+                Positioned(
+                  height: 200,
+                  width: 120,
+                  top: 20,
+                  right: 20,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: RTCVideoView(
+                      _localRenderer,
+                      mirror: true,
+                      objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+                    ),
                   ),
                 ),
-              ),
+                Positioned(
+                  height: 50,
+                  bottom: 20,
+                  right: 20,
+                  left: 20,
+                  child: AppButton(
+                    onTap: () {
+                      signaling.hangUp(_localRenderer);
+                      Get.back();
+                    },
+                    text: "Call End",
+                  ),
+                ),
+              ],
             ),
-            Positioned(
-              height: 50,
-              bottom: 20,
-              right: 20,
-              left: 20,
-              child: AppButton(
-                onTap: () {
-                  signaling.hangUp(_localRenderer);
-                  Get.back();
-                },
-                text: "Call End",
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

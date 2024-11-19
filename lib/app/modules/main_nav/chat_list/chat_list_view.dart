@@ -18,34 +18,36 @@ class ChatListView extends GetView<ChatListController> {
         title: const Text('Chat List'),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: mainPadding(20, 0),
-        child: Expanded(
-          child: Obx(() {
-            if (controller.usersList.isEmpty) {
-              return Center(
-                child: Text(
-                  'No rooms available.\n Please Create New Room',
-                  style: text16Style(),
-                  textAlign: TextAlign.center,
-                ),
-              );
-            }
+      body: Obx(() {
+        if (controller.usersList.isEmpty) {
+          return Center(
+            child: Padding(
+              padding: mainPadding(20, 20),
+              child: Text(
+                'No rooms available.\n Please Create New Room',
+                style: text16Style(),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          );
+        }
 
-            return ListView.separated(
-              padding: mainPadding(0, 10),
-              itemCount: controller.usersList.length,
-              itemBuilder: (context, index) {
-                final user = controller.usersList[index];
-                return listItem(user: user);
-              },
-              separatorBuilder: (context, index) {
-                return gapH12;
-              },
-            );
-          }),
-        ),
-      ),
+        return Padding(
+          padding: mainPadding(20, 0),
+          child: ListView.separated(
+            padding: mainPadding(0, 10),
+            shrinkWrap: true,
+            itemCount: controller.usersList.length,
+            itemBuilder: (context, index) {
+              final user = controller.usersList[index];
+              return listItem(user: user);
+            },
+            separatorBuilder: (context, index) {
+              return gapH12;
+            },
+          ),
+        );
+      }),
     );
   }
 
