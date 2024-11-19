@@ -16,7 +16,7 @@ class HomeController extends GetxController {
   // Fetch rooms from Firestore and update the room list using the Room model
   void fetchRooms() {
     logger.d("fetchRooms");
-    firestore.collection('roomsDB').snapshots().listen((snapshot) {
+    fireStore.collection('roomsDB').snapshots().listen((snapshot) {
       roomList.clear();
       for (var doc in snapshot.docs) {
         roomList.add(doc.id.toString());

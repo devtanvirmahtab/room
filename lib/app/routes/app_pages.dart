@@ -18,6 +18,8 @@ import '../modules/room/room_screen/room_screen_binding.dart';
 import '../modules/room/room_screen/room_screen_view.dart';
 import '../modules/setting/setting_binding.dart';
 import '../modules/setting/setting_view.dart';
+import '../modules/sign_up/sign_up_binding.dart';
+import '../modules/sign_up/sign_up_view.dart';
 import '../modules/splash_screen/splash_screen_binding.dart';
 import '../modules/splash_screen/splash_screen_view.dart';
 
@@ -78,6 +80,11 @@ class AppPages {
       name: _Paths.SETTING,
       page: () => const SettingView(),
       binding: SettingBinding(),
+    ),
+    GetPage(
+      name: _Paths.SIGN_UP,
+      page: () => const SignUpView(),
+      binding: SignUpBinding(),
     ),
   ];
 }

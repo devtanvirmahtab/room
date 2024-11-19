@@ -34,7 +34,7 @@ class CreateRoomController extends GetxController {
 
     if (roomNameController.text.trim().isNotEmpty) {
       if (user != null) {
-        var roomId = firestore.collection('rooms').doc().id;
+        var roomId = fireStore.collection('rooms').doc().id;
         var room = Room(
           roomId: roomId,
           roomName: roomNameController.text,
@@ -43,7 +43,7 @@ class CreateRoomController extends GetxController {
           createdAt: DateTime.now(),
         );
 
-        await firestore.collection('rooms').doc(roomId).set(room.toMap());
+        await fireStore.collection('rooms').doc(roomId).set(room.toMap());
         return roomId;
       }
     }

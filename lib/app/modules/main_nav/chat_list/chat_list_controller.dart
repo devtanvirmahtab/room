@@ -14,7 +14,7 @@ class ChatListController extends GetxController {
 
   void fetchUsers() async {
     try {
-      QuerySnapshot snapshot = await firestore.collection('users').get();
+      QuerySnapshot snapshot = await fireStore.collection('users').get();
       var usersData = snapshot.docs.map((doc) => UserModel.fromJson(doc.data() as Map<String, dynamic>)).toList();
       usersList.value = usersData;
     }on FirebaseException catch (e) {

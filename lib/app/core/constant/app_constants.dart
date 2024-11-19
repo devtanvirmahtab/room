@@ -6,7 +6,7 @@ import 'package:logger/logger.dart';
 
 import '../widgets/app_widgets.dart';
 
-final firestore = FirebaseFirestore.instance;
+final fireStore = FirebaseFirestore.instance;
 final auth = FirebaseAuth.instance;
 
 var logger = Logger();

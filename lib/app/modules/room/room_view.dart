@@ -56,7 +56,7 @@ class MyHomePageState extends State<RoomView> {
   }
 
   Future<void> deleteRoomIfExists(String roomId) async {
-    final docRef = firestore.collection('roomsDB').doc(roomId);
+    final docRef = fireStore.collection('roomsDB').doc(roomId);
     final docSnapshot = await docRef.get();
 
     if (docSnapshot.exists) {

@@ -60,7 +60,7 @@ class ChatController extends GetxController {
   }
 
   void listenForMessages() {
-    firestore
+    fireStore
         .collection('chats')
         .doc(chatRoomId.value)
         .collection('messages')
@@ -76,7 +76,7 @@ class ChatController extends GetxController {
 
   void sendMessage(String content, String senderId) async {
     try {
-      await firestore
+      await fireStore
           .collection('chats')
           .doc(chatRoomId.value)
           .collection('messages')

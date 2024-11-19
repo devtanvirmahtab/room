@@ -29,7 +29,7 @@ class SplashScreenController extends GetxController {
       Future.delayed(
         const Duration(milliseconds: 3000),
             () {
-          requestNotificationPermission();
+          // requestNotificationPermission();
         },
       );
 
